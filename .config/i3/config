@@ -19,6 +19,10 @@ font pango:monospace 8
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
+# Start XDG autostart .desktop files using dex. See also
+# https://wiki.archlinux.org/index.php/XDG_Autostart
+exec --no-startup-id dex --autostart --environment i3
+
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
 
@@ -47,19 +51,18 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run -l 10
-#bindsym $mod+d exec rofi -show run -lines 3 -eh 2 -width 100 -padding 800 -opacity "85" -bw 0 -bc "$bg-color" -bg "$bg-color" -fg "$text-color" -hlbg "$bg-color" -hlfg "#9575cd" 
-
-# There also is the (new) i3-dmenu-desktop which only displays applications
-# shipping a .desktop file. It is a wrapper around dmenu, so you need that
-# installed.
-# bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
+bindsym $mod+d exec --no-startup-id dmenu_run
+# A more modern dmenu replacement is rofi:
+# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
+# There also is i3-dmenu-desktop which only displays applications shipping a
+# .desktop file. It is a wrapper around dmenu, so you need that installed.
+# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
 
 # change focus
-# bindsym $mod+j focus left
-# bindsym $mod+k focus down
-# bindsym $mod+l focus up
-# bindsym $mod+semicolon focus right
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -176,75 +179,43 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-
-set $bg-color 	         #2f343f
-set $inactive-bg-color   #2f343f
-set $text-color          #f3f4f5
-
-set $urgent-bg-color     #E53935
-
-# window colors
-#                       border              background         text                 indicator
-#client.focused          $bg-color           $bg-color          $text-color          #00ff00
-#client.unfocused        $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
-#client.focused_inactive $inactive-bg-color $inactive-bg-color $inactive-text-color #00ff00
-#client.urgent           $urgent-bg-color    $urgent-bg-color   $text-color          #00ff00
-
-
-set $monitor_left HDMI-1                                                        
-set $monitor_right LVDS-1 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
-        status_command i3blocks -c ~/.config/i3/i3blocks.conf
-        position top
-#        colors {
-#		    background $bg-color
-#	    	separator #757575
-		    #                  border             background         text
-#		    focused_workspace  $bg-color          $bg-color          $text-color
-#		    inactive_workspace $inactive-bg-color $inactive-bg-color $inactive-text-color
-#		    urgent_workspace   $urgent-bg-color   $urgent-bg-color   $text-color
-#    	}
-         tray_output $monitor_left
-
-
-         bindsym --release button2 exec --no-startup-id import /tmp/latest-screenshot.png
-         bindsym --release button1 exec nmcli c up BaharVPN-l2tp
-         bindsym --release button3 exec nmcli c down BaharVPN-l2tp
+	position top
+        #status_command i3status
+	status_command i3blocks -c ~/.config/i3/i3blocks.conf
 }
 
-
-### cusotm keybindings ###
-bindsym $mod+l exec i3lock 
-
-#########################
-
-### workspaces ###
-
-assign [class="TelegramDesktop"] $ws10
-assign [class="Google-chrome"] $ws1
-
-workspace $ws10 output $monitor_right
-
-exec sh ~/.screenlayout/monitors-pos.sh
+#### keyboard layouts
+exec_always --no-startup-id "setxkbmap -layout us,ir -option 'grp:alt_shift_toggle'"
 
 
-########################
+#### lock
+bindsym $mod+o exec ~/.config/i3/lock.sh
+
+#### wallpaper
+exec_always feh --bg-scale ~/Pictures/wallpaper2560x1080.jpg 
+
+#exec --no-startup-id picom -CGb
 
 
-### wallpaper ###
-exec_always feh --bg-scale ~/Pictures/Wallpapers/jungle.jpg
+#### microphone
 
-#######################
+# mute microphne by default
+exec_always --no-startup-id pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+
+# push-to-talk
+bindsym $mod+x exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
+bindsym --release $mod+x  exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+
+# toggle mute
+bindsym $mod+n exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+bindsym $mod+m exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
+#########
 
 
-### startup apps ###
-exec telegram
-exec google-chrome
+# enable touchpad tap click
+exec xinput set-prop "ELAN1200:00 04F3:30F7 Touchpad" "libinput Tapping Enabled" 1
 
-######################
-
-exec compton -f -I 0.05 -O 0.05
-
-
+#########
