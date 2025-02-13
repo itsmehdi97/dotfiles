@@ -1,3 +1,5 @@
+sudo apt install imagemagick scrot feh flameshot
+
 
 ####  for wallpaper
 sudo apt install feh
