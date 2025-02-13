@@ -199,19 +199,24 @@ exec_always feh --bg-scale ~/Pictures/wallpaper2560x1080.jpg
 
 #exec --no-startup-id picom -CGb
 
+#### screenshot
+bindsym $mod+c exec flameshot gui -c
+
+#####
+
 
 #### microphone
 
 # mute microphne by default
-exec_always --no-startup-id pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+#exec_always --no-startup-id pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
 
 # push-to-talk
-bindsym $mod+x exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
-bindsym --release $mod+x  exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+#bindsym $mod+x exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
+#bindsym --release $mod+x  exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
 
 # toggle mute
-bindsym $mod+n exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
-bindsym $mod+m exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
+#bindsym $mod+n exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 1
+#bindsym $mod+m exec pactl set-source-mute `pactl list short sources | grep -i HUAWEI | grep input | awk '{print $2}'` 0
 #########
 
 
